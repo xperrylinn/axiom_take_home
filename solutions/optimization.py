@@ -60,11 +60,12 @@ class FarmOptimization:
 
     def __init__(self,
                  acre_avail,
+                 hr_labor_available,
                  prof_per_acre_corn,
                  prof_per_acre_oat,
                  hr_per_acre_corn,
-                 hr_per_acre_oat,
-                 hr_labor_available):
+                 hr_per_acre_oat
+                 ):
         self.acre_available = acre_avail                    # X
         self.hour_labor_available = hr_labor_available      # Y
         self.profit_per_acre_of_corn = prof_per_acre_corn   # p1
@@ -112,10 +113,9 @@ class FarmOptimization:
         solution = minimize(
             obj,
             initial_guess,
-            # method='SLSQP',
+            method='SLSQP',
             bounds=bounds,
             constraints=constraints,
-            options={'maxiter': 10000}
         )
         return solution
 
