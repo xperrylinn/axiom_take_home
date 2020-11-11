@@ -17,5 +17,3 @@ Her team has Y hours of labor available. The corn takes H1 hours of labor per ac
         * X = 180, Y = 420, P1 = $65, P2 = $55, H1 = 3, H2 = 2
        
     * Solution: src code and pronlem analysis in solution/farm_optimization.py with test in tests/test_farm_optimization.py
-
-* Given the differential equation f'(x) = x^x, write a function that uses Euler's method to approximate the value of f(x1) given an initial condition (x0, f(x0)) and the value of x1.
