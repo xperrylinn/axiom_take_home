@@ -42,14 +42,90 @@ from scipy.optimize import minimize
                     - hr = acre * (hr/acre + hr/acre)
                             
                 - c1 + c2 = 1
+            
+            -- bounds
+                
                 - 0 <= c1 <= 1
+                
                 - 0 <= c2 <= 1
-        
+
+X = 240, Y = 320, P1 = $40, P2 = $30, H1 = 2, H2 = 1
+X = 300, Y = 380, P1 = $70, P2 = $  45, H1 = 3, H2 = 1
+X = 180, Y = 420, P1 = $65, P2 = $55, H1 = 3, H2 = 2        
+
 '''
 
-def objective(x):
-    return
 
-def constraint1():
-    return
+class FarmOptimization:
 
+    def __init__(self,
+                 acre_avail,
+                 prof_per_acre_corn,
+                 prof_per_acre_oat,
+                 hr_per_acre_corn,
+                 hr_per_acre_oat,
+                 hr_labor_available):
+        self.acre_available = acre_avail                    # X
+        self.hour_labor_available = hr_labor_available      # Y
+        self.profit_per_acre_of_corn = prof_per_acre_corn   # p1
+        self.profit_per_acre_of_oat = prof_per_acre_oat     # p2
+        self.hour_labor_per_acre_corn = hr_per_acre_corn    # h1
+        self.hour_labor_per_acre_oat = hr_per_acre_oat      # h2
+        # MAXIMIZE X * (p1 * c1 + p2 * c2) or MINIMIZE -1 * X * (p1 * c1 + p2 * c2)
+        self.objective_fxn = \
+            lambda c1, c2: -1.0 * self.acre_available * (self.profit_per_acre_of_corn * c1 +
+                                                         self.profit_per_acre_of_oat * c2)
+        # Y - X * (c1 * h1 + c2 * h2) >= 0
+        self.labor_constraint = \
+            lambda c1, c2: (self.hour_labor_available - self.acre_available * (c1 * self.hour_labor_per_acre_corn +
+                                                                               c2 * self.hour_labor_per_acre_oat))
+        # c1 + c2 = 1
+        self.corn_and_oat_acre_scalar_constraint = lambda c1, c2: (1 - (c1 + c2))
+        # 0 <= c1 <= 1
+        self.acre_scalar_bounds = (0.0, 1.0)                # 0 <= c1, c2 <= 1
+
+    def objective(self, x):
+        # MAXIMIZE X * (p1 * c1 + p2 * c2)
+        c1 = x[0]
+        c2 = x[1]
+        return self.objective_fxn(c1, c2)
+
+    def constraint_1(self, x):
+        # Y - X * (c1 * h1 + c2 * h2) >= 0
+        c1 = x[0]
+        c2 = x[1]
+        return self.labor_constraint(c1, c2)
+
+    def constraint_2(self, x):
+        # 1 - (c1 + c2) == 0
+        c1 = x[0]
+        c2 = x[1]
+        return self.corn_and_oat_acre_scalar_constraint(c1, c2)
+
+    def solve(self):
+        obj = self.objective
+        bounds = (self.acre_scalar_bounds, self.acre_scalar_bounds)
+        const_1 = {'type': 'eq', 'fun': self.constraint_1}
+        const_2 = {'type': 'eq', 'fun': self.constraint_2}
+        constraints = [const_1, const_2]
+        initial_guess = (0.5, 0.5)  # half corn, half oat
+        solution = minimize(
+            obj,
+            initial_guess,
+            # method='SLSQP',
+            bounds=bounds,
+            constraints=constraints,
+            options={'maxiter': 10000}
+        )
+        return solution
+
+
+if __name__ == '__main__':
+    '''
+        case_1: X = 240, Y = 320, P1 = $40, P2 = $30, H1 = 2, H2 = 1
+        case_1: X = 300, Y = 380, P1 = $70, P2 = $45, H1 = 3, H2 = 1
+        case_1: X = 180, Y = 420, P1 = $65, P2 = $55, H1 = 3, H2 = 2        
+    '''
+    print(FarmOptimization(240.0, 320.0, 40.0, 30.0, 2.0, 1.0).solve())
+    print(FarmOptimization(300, 380, 70, 45, 3, 1).solve())
+    print(FarmOptimization(180, 420, 65, 55, 3, 2).solve())
