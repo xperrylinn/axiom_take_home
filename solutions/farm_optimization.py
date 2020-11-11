@@ -86,7 +86,7 @@ class FarmOptimization:
         self.acre_scalar_bounds = (0.0, 1.0)                # 0 <= c1, c2 <= 1
 
     def objective(self, x):
-        # MAXIMIZE X * (p1 * c1 + p2 * c2)
+        # MAXIMIZE -X * (p1 * c1 + p2 * c2) OR MINIMIZE -1 * X * (p1 * c1 + p2 * c2)
         c1 = x[0]
         c2 = x[1]
         return self.objective_fxn(c1, c2)
