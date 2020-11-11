@@ -49,10 +49,6 @@ from scipy.optimize import minimize
                 
                 - 0 <= c2 <= 1
 
-X = 240, Y = 320, P1 = $40, P2 = $30, H1 = 2, H2 = 1
-X = 300, Y = 380, P1 = $70, P2 = $  45, H1 = 3, H2 = 1
-X = 180, Y = 420, P1 = $65, P2 = $55, H1 = 3, H2 = 2        
-
 '''
 
 
@@ -118,14 +114,3 @@ class FarmOptimization:
             constraints=constraints,
         )
         return solution
-
-
-if __name__ == '__main__':
-    '''
-        case_1: X = 240, Y = 320, P1 = $40, P2 = $30, H1 = 2, H2 = 1
-        case_2: X = 300, Y = 380, P1 = $70, P2 = $45, H1 = 3, H2 = 1
-        case_3: X = 180, Y = 420, P1 = $65, P2 = $55, H1 = 3, H2 = 2        
-    '''
-    case_1_soln = FarmOptimization(240.0, 320.0, 40.0, 30.0, 2.0, 1.0).solve()
-    case_2_soln = FarmOptimization(300.0, 380, 70.0, 45.0, 3.0, 1.0).solve()
-    case_3_soln = FarmOptimization(180.0, 420.0, 65.0, 55, 3.0, 2.0).solve()
